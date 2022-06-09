@@ -235,6 +235,7 @@ table {
   perspective: 10000000px;
   position: relative;
   top: 64px;
+  overflow: hidden;
 }
 .SliderGroup {
   width: 100%;
@@ -333,7 +334,10 @@ table {
   position: relative;
   left: 940px;
 }
-
+.videoIframe{
+  width: 940px;
+  height: 530px;
+}
 .VideoHeaderClose::after,
 .VideoHeaderClose::before,.ProductTrailerClose::after , .ProductTrailerClose::before {
   content: "";
@@ -602,7 +606,7 @@ table {
   border: none;
   margin: 0 10px;
 }
-#btnProduct1{
+.btnProduct:first-child{
   background-color: #fb4226;
 }
 .Shadow {

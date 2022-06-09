@@ -409,7 +409,7 @@ var Urlvideohearder = "";
 const handleShowVideoHeader = (Urlvideohearder) => {
   const VideoHeaderGroup = `<div class="VideoHeaderGroup">
                             <div class="VideoHeaderClose"></div>
-                            <iframe width="940" height="530" src="https://www.youtube.com/embed/${Urlvideohearder}?autoplay=1&amp;cc_load_policy=1&amp;controls=1&amp;disablekb=0&amp;enablejsapi=0&amp;fs=1&amp;iv_load_policy=1&amp;loop=0&amp;rel=0&amp;showinfo=1&amp;start=0&amp;wmode=transparent&amp;theme=dark&amp;mute=0" "
+                            <iframe class="videoIframe" src="https://www.youtube.com/embed/${Urlvideohearder}?autoplay=1&amp;cc_load_policy=1&amp;controls=1&amp;disablekb=0&amp;enablejsapi=0&amp;fs=1&amp;iv_load_policy=1&amp;loop=0&amp;rel=0&amp;showinfo=1&amp;start=0&amp;wmode=transparent&amp;theme=dark&amp;mute=0" "
                               title="YouTube video player" frameborder="0" 
                               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                               allowfullscreen>
@@ -453,7 +453,7 @@ const ShowHandlesTrailer = (url) => {
   var ShowTrailerProduct = `<div class="ProductTrailer">
                               <div class="ProductTrailerGroup">
                               <div class="ProductTrailerClose"></div>
-                              <iframe width="940" height="530" src="https://www.youtube.com/embed/${url}?autoplay=1&amp;cc_load_policy=1&amp;controls=1&amp;disablekb=0&amp;enablejsapi=0&amp;fs=1&amp;iv_load_policy=1&amp;loop=0&amp;rel=0&amp;showinfo=1&amp;start=0&amp;wmode=transparent&amp;theme=dark&amp;mute=0" "
+                              <iframe class="videoIframe" src="https://www.youtube.com/embed/${url}?autoplay=1&amp;cc_load_policy=1&amp;controls=1&amp;disablekb=0&amp;enablejsapi=0&amp;fs=1&amp;iv_load_policy=1&amp;loop=0&amp;rel=0&amp;showinfo=1&amp;start=0&amp;wmode=transparent&amp;theme=dark&amp;mute=0" "
                                 title="YouTube video player" frameborder="0" 
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                                 allowfullscreen>
@@ -473,6 +473,19 @@ ShowTraiLerProducts.onclick = () => {
   urlProduct = "";
   ShowHandlesTrailer(urlProduct);
 };
+const handleClickBtn=(id )=>{
+  var Btnlist = Array.from(document.querySelectorAll(".btnProduct"));
+  Btnlist.map((btn)=>{
+    if(btn.id===`c${id}`){
+      let rotatefloor = id*(360/leng)
+      btn.style.backgroundColor = "#fb4226"
+      Floor.style.transform = `rotateY(-${rotatefloor}deg)`
+    }else{
+      btn.style.backgroundColor = "#757575"
+    }
+  })
+}
+var leng = 0
 const URLdanhSachPhim =
   "https://movie0706.cybersoft.edu.vn/api/QuanLyPhim/LayDanhSachPhim?maNhom=GP09";
 const Floor = document.querySelector(".Floor");
@@ -481,7 +494,11 @@ fetch(URLdanhSachPhim)
     return res.json();
   })
   .then((res) => {
-    const limit = 8;
+    const SliderContainer = document.querySelector(".SliderContainer");
+    var limit = 8
+    if (SliderContainer.clientWidth<=768){
+      limit = 6;
+    }
     const ArrayNumbers = Math.ceil(res.length / limit);
     var ArrayPages = [];
     for (let i = 0; i < ArrayNumbers; i++) {
@@ -544,27 +561,14 @@ fetch(URLdanhSachPhim)
       return productList;
     };
     Floor.innerHTML = componentShowProducts().join().replace(/,/g, "");
+    const sliderProduct = document.querySelector(".sliderProduct")
+    const BtnArr = []
+    for(let h=0 ; h<ArrayPages.length ; h++){
+       var BtnItem= `<button class="btnProduct" id = 'c${h}' type="button" onclick="handleClickBtn(${h})"></button>`
+       BtnArr.push(BtnItem)
+    }
+    sliderProduct.innerHTML = BtnArr.join().replace(/,/g, "");
+    leng = ArrayPages.length
   });
-const btnProduct1 = document.querySelector("#btnProduct1");
-const btnProduct2 = document.querySelector("#btnProduct2");
-const btnProduct3 = document.querySelector("#btnProduct3");
-btnProduct1.onclick = () => {
-  Floor.style.transform = "rotateY(0deg)";
-  btnProduct1.style.backgroundColor = "#fb4226";
-  btnProduct2.style.backgroundColor = "#757575";
-  btnProduct3.style.backgroundColor = "#757575";
-};
-btnProduct2.onclick = () => {
-  Floor.style.transform = "rotateY(-120deg)";
-  btnProduct1.style.backgroundColor = "#757575";
-  btnProduct2.style.backgroundColor = "#fb4226";
-  btnProduct3.style.backgroundColor = "#757575";
-};
-btnProduct3.onclick = () => {
-  Floor.style.transform = "rotateY(-240deg)";
-  btnProduct1.style.backgroundColor = "#757575";
-  btnProduct3.style.backgroundColor = "#fb4226";
-  btnProduct2.style.backgroundColor = "#757575";
-};
 NewDetailTab();
 ShowDetails(cinemaId);

@@ -519,7 +519,7 @@ fetch(URLdanhSachPhim)
                     />
                     <div class="cushion">
                       <div class="player">
-                        <img src="./static/img/tải xuống.png" alt="" />
+                        <img src="./static/img/play.png" alt="" />
                       </div>
                     </div>
                   </div>

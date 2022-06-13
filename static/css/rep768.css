@@ -99,6 +99,7 @@
     max-width: 100%;
     padding-top: 74px;
     height: 896px;
+    overflow: hidden;
   }
   .ShowTraiLerProduct{
     position: fixed;
@@ -170,5 +171,16 @@
   .PARTNER img {
     width: 20px;
     height: 20px;
+  }
+}
+@media screen and (max-width: 570px){
+  .product {
+    width: calc((100% - 72px)/2);
+    height: calc((100% - 36px) / 2);
+    margin-bottom: 24px;
+  }
+  .SliderProductList{
+    background-color: #fff;
+    margin: 0 5px;
   }
 }

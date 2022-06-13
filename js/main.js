@@ -1,9 +1,359 @@
+//========= Validator ================
+const LoginElement = document.querySelector(".Login");
+const RegisterElement = document.querySelector(".register");
+const FromPage = document.querySelector(".FromPage");
+var ShowForm = true;
+const ShowLoginFrom = () => {
+  if (document.querySelector("#registerFrom")) {
+    FromPage.style.bottom = "-100%";
+    dePlay = setTimeout(() => {
+      FromPage.innerHTML = FromComponent("Login");
+      FromPage.style.bottom = "0%";
+      ShowForm = !ShowForm;
+    }, 800);
+  }
+  if (ShowForm) {
+    FromPage.innerHTML = FromComponent("Login");
+    FromPage.style.bottom = "0%";
+    ShowForm = !ShowForm;
+  } else {
+    FromPage.style.bottom = "-100%";
+    ShowForm = !ShowForm;
+  }
+};
+const ShowRegisterFrom = () => {
+  if (document.querySelector("#loginFrom")) {
+    FromPage.style.bottom = "-100%";
+    setTimeout(() => {
+      FromPage.innerHTML = FromComponent("register");
+      FromPage.style.bottom = "0%";
+      ShowForm = !ShowForm;
+    }, 800);
+  }
+  if (ShowForm) {
+    FromPage.innerHTML = FromComponent("register");
+    FromPage.style.bottom = "0%";
+    ShowForm = !ShowForm;
+  } else {
+    FromPage.style.bottom = "-100%";
+    ShowForm = !ShowForm;
+  }
+};
+LoginElement.onclick = (e) => {
+  ShowLoginFrom();
+};
+RegisterElement.onclick = () => {
+  ShowRegisterFrom();
+};
+const ValueFormRegister = {
+  Email: "",
+  Password: "",
+  userName: "",
+  fullName: "",
+  PasswordConfirm: "",
+};
+const ErrorMessageFormRegister = {
+  Email: "",
+  Password: "",
+  userName: "",
+  fullName: "",
+  PasswordConfirm: "",
+};
+const ValueFormLogin = { Password: "", userName: "" };
+const ErrorMessageFormLogin = { Password: "", userName: "" };
+const handlechange = (props) => {
+  if (props.from === "register") {
+    console.log(ValueFormRegister.Email);
+    switch (props.type.toUpperCase()) {
+      case "EMAIL":
+        ValueFormRegister.Email = props.value;
+        break;
+      case "PASSWORD":
+        ValueFormRegister.Password = props.value;
+        break;
+      case "USERNAME":
+        ValueFormRegister.userName = props.value;
+        break;
+      case "FULLNAME":
+        ValueFormRegister.fullName = props.value;
+        break;
+      case "PASSWORDCONFIRM":
+        ValueFormRegister.PasswordConfirm = props.value;
+        break;
+    }
+  } else if (props.from === "Login") {
+    switch (props.type.toUpperCase()) {
+      case "USERNAME":
+        ValueFormLogin.userName = props.value;
+        break;
+      case "PASSWORD":
+        ValueFormLogin.Password = props.value;
+        break;
+    }
+  }
+};
+const validate = (props) => {
+  if (props.from === "register") {
+    let mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    let elmentErr = FromPage.querySelector(`#${props.value.toLowerCase()}err`);
+    if (ValueFormRegister[props.value] === "") {
+      ErrorMessageFormRegister[props.value] = "Trường này là bắt buộc";
+      elmentErr.innerHTML = ErrorMessageFormRegister[props.value];
+      elmentErr.style.color = "red";
+    } else {
+      switch (props.typeValidate.toUpperCase()) {
+        case "EMAIL":
+          if (ValueFormRegister[props.value].match(mailformat)) {
+            ErrorMessageFormRegister[props.value] = "Success";
+            elmentErr.innerHTML = ErrorMessageFormRegister[props.value];
+            elmentErr.style.color = "green";
+          } else {
+            ErrorMessageFormRegister[props.value] =
+              "Email không đúng định dạng";
+            elmentErr.innerHTML = ErrorMessageFormRegister[props.value];
+            elmentErr.style.color = "red";
+          }
+          break;
+        case "CHECKLENGTH":
+          if (ValueFormRegister[props.value].length < props.minLength) {
+            ErrorMessageFormRegister[
+              props.value
+            ] = `Tối thiểu ${props.minLength} ký tự`;
+            elmentErr.innerHTML = ErrorMessageFormRegister[props.value];
+            elmentErr.style.color = "red";
+          } else {
+            ErrorMessageFormRegister[props.value] = "Success";
+            elmentErr.innerHTML = ErrorMessageFormRegister[props.value];
+            elmentErr.style.color = "green";
+          }
+          break;
+        case "PASSWORD":
+          if (ValueFormRegister[props.value].length < props.minLength) {
+            ErrorMessageFormRegister[
+              props.value
+            ] = `Tối thiểu ${props.minLength} ký tự`;
+            elmentErr.innerHTML = ErrorMessageFormRegister[props.value];
+            elmentErr.style.color = "red";
+          } else {
+            if (ValueFormRegister.PasswordConfirm === "") {
+              ErrorMessageFormRegister[props.value] = "Success";
+              elmentErr.innerHTML = ErrorMessageFormRegister[props.value];
+              elmentErr.style.color = "green";
+            } else if (
+              ValueFormRegister[props.value] ===
+              ValueFormRegister.PasswordConfirm
+            ) {
+              ErrorMessageFormRegister[props.value] = "Success";
+              ErrorMessageFormRegister.PasswordConfirm = "Success";
+              elmentErr.style.color = "green";
+              elmentErr.innerHTML = ErrorMessageFormRegister[props.value];
+              document.querySelector("#passwordconfirmerr").style.color =
+                "green";
+              document.querySelector("#passwordconfirmerr").innerHTML =
+                "Success";
+            } else {
+              ErrorMessageFormRegister[props.value] = "Success";
+              elmentErr.style.color = "green";
+              ErrorMessageFormRegister.PasswordConfirm =
+                "Mật Khẩu Nhập Lại Không Chính Xác";
+              elmentErr.innerHTML = ErrorMessageFormRegister[props.value];
+              document.querySelector("#passwordconfirmerr").style.color = "red";
+              document.querySelector("#passwordconfirmerr").innerHTML =
+                "Mật Khẩu Nhập Lại Không Chính Xác";
+            }
+          }
+          break;
+        case "PASSWORDCONFIRM":
+          if (ValueFormRegister[props.value].length < props.minLength) {
+            ErrorMessageFormRegister[
+              props.value
+            ] = `Tối thiểu ${props.minLength} ký tự`;
+            elmentErr.innerHTML = ErrorMessageFormRegister[props.value];
+            elmentErr.style.color = "red";
+          } else {
+            if (ValueFormRegister.Password === "") {
+              ErrorMessageFormRegister[props.value] = "Bạn Chưa Nhập Mật Khẩu";
+              elmentErr.innerHTML = ErrorMessageFormRegister[props.value];
+              elmentErr.style.color = "red";
+            } else if (!(ValueFormRegister[props.value] === ValueFormRegister.Password)) {
+              ErrorMessageFormRegister[props.value] =
+                "Mật Khẩu Nhập Lại Không Chính Xác";
+              elmentErr.innerHTML = ErrorMessageFormRegister[props.value];
+              elmentErr.style.color = "red";
+            } else {
+              ErrorMessageFormRegister[props.value] = "Success";
+              elmentErr.style.color = "green";
+              elmentErr.innerHTML = ErrorMessageFormRegister[props.value];
+            }
+          }
+          break;
+        default:
+          ErrorMessageFormRegister[props.value] =
+            "type validate chưa được định dạng";
+          elmentErr.innerHTML = ErrorMessageFormRegister[props.value];
+          elmentErr.style.color = "red";
+      }
+    }
+  } else if (props.from === "Login") {
+    console.log(`#${props.value.toLowerCase()}loginerr`);
+    let elmentErr = FromPage.querySelector(
+      `#${props.value.toLowerCase()}loginerr`
+    );
+    switch (props.typeValidate.toUpperCase()) {
+      case "CHECKLENGTH":
+        if (ValueFormLogin[props.value].length < props.minLength) {
+          ErrorMessageFormLogin[
+            props.value
+          ] = `Tối thiểu ${props.minLength} ký tự`;
+          elmentErr.innerHTML = ErrorMessageFormLogin[props.value];
+          elmentErr.style.color = "red";
+        } else {
+          ErrorMessageFormLogin[props.value] = `Success`;
+          elmentErr.innerHTML = ErrorMessageFormLogin[props.value];
+          elmentErr.style.color = "green";
+        }
+        break;
+      default:
+        ErrorMessageFormLogin[props.value] =
+          "type validate chưa được định dạng";
+        elmentErr.innerHTML = ErrorMessageFormLogin[props.value];
+        elmentErr.style.color = "red";
+    }
+  }
+};
+const validator = (props) => {
+  let submit = false;
+  props.event.preventDefault();
+  if (props.from === "register") {
+    Object.keys(ErrorMessageFormRegister).map((key) => {
+      if (ErrorMessageFormRegister[key] === "") {
+        FromPage.querySelector(`#${key.toLowerCase()}err`).innerHTML =
+          "Trường này là bắt buộc";
+      }
+      if (!(ErrorMessageFormRegister[key] === "Success")) {
+        return (submit = false);
+      } else {
+        submit = true;
+      }
+      return submit;
+    });
+  } else if (props.from === "Login") {
+    Object.keys(ErrorMessageFormLogin).map((key) => {
+      if (ErrorMessageFormLogin[key] === "") {
+        FromPage.querySelector(`#${key.toLowerCase()}loginerr`).innerHTML =
+          "Trường này là bắt buộc";
+      }
+      if (!(ErrorMessageFormLogin[key] === "Success")) {
+        return (submit = false);
+      } else {
+        submit = true;
+      }
+      return submit;
+    });
+  }
+};
+const FromComponent = (fromName) => {
+  const eysClose = `<svg><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"></path></svg>`
+  const eys = `<svg class="MuiSvgIcon-root" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"></path></svg>`
+  switch (fromName) {
+    case "Login":
+      return `<div class="FromGroups" id="from1">
+                <div class="fromItem">
+                  <div class="logoFrom">
+                    <i class="fa-solid fa-user"></i>
+                  </div>
+                </div>
+                <h4>Đăng nhập</h4>
+                <form id="loginFrom">
+                  <input type="Text" placeholder="Tài Khoản *"
+                    value="${ValueFormLogin.userName}" onchange='handlechange({value:event.target.value , type: "userName", from:"Login"})' 
+                    onblur="validate({typeValidate:'checklength',value:'userName', minLength:6, from:'Login'})"
+                  />
+                  <p class='fromMessage'id='usernameloginerr'></p>
+                  <input type="password" placeholder="Mật Khẩu *"
+                    value="${ValueFormLogin.Password}" onchange='handlechange({value:event.target.value , type: "password",from:"Login"})' 
+                    onblur="validate({typeValidate:'checklength',value:'Password', minLength:8, from:'Login'})"
+                  />
+                  <p class='fromMessage'id='passwordloginerr'></p>
+                  <button onclick='validator({event:event , from:"Login"})'>Đăng Nhập</button>
+                </form>
+                <div class='helpBox'><p>Bạn chưa có tài khoản? &nbsp;<p id='nextPage' onclick='ShowRegisterFrom()'>Đăng ký</p></p></div>
+              </div>`;
+    case "register":
+      return `<div class="FromGroups" id="from1">
+                <div class="fromItem">
+                  <div class="logoFrom">
+                    <i class="fa-solid fa-user"></i>
+                  </div>
+                </div>
+                <h4>Đăng Ký</h4>
+                <form id="registerFrom">
+                  <input type="Text" placeholder="Tài Khoản *" id='userName'
+                    value="${ValueFormRegister.userName}" onchange='handlechange({value:event.target.value , type: "userName",from:"register"})' 
+                    onblur="validate({typeValidate:'checklength',value:'userName', minLength:6, from:'register'})"
+                  />
+                  <p class='fromMessage'id='usernameerr'>${ErrorMessageFormRegister.userName}</p>
+                  <input type="Email" placeholder="Email *" 
+                    value="${ValueFormRegister.Email}" onchange='handlechange({value:event.target.value , type: "email",from:"register"})' 
+                    onblur="validate({typeValidate: 'email',from:'register' , value:'Email'})"
+                  />
+                  <p class='fromMessage' id='emailerr'>${ErrorMessageFormRegister.Email}</p>
+                  <input type="Text" placeholder="Tên Đầy Đủ *" id='fullName'
+                    value="${ValueFormRegister.fullName}" onchange='handlechange({value:event.target.value , type: "fullName",from:"register"})' 
+                    onblur="validate({typeValidate:'checklength', value: 'fullName', minLength: 6 , from:'register'})"
+                  />
+                  <p class='fromMessage'id='fullnameerr'>${ErrorMessageFormRegister.fullName}</p>
+                  <input type="password" placeholder="Mật Khẩu *" id='password'
+                    value="${ValueFormRegister.Password}" onchange='handlechange({value:event.target.value , type: "password",from:"register"})' 
+                    onblur="validate({typeValidate:'Password', value: 'Password', minLength: 8 , from:'register'})"
+                  />
+                  <p class='fromMessage'id='passworderr'>${ErrorMessageFormRegister.Password}</p>
+                  <input type="password" placeholder="Nhập lại Mật Khẩu *" id='PasswordConfirm'
+                    value="${ValueFormRegister.PasswordConfirm}" onchange='handlechange({value:event.target.value , type: "PasswordConfirm",from:"register"})' 
+                    onblur="validate({typeValidate:'PasswordConfirm', value:'PasswordConfirm', minLength: 8 , from:'register'})"
+                  />
+                  <p class='fromMessage' id='passwordconfirmerr'>${ErrorMessageFormRegister.PasswordConfirm}</p>
+                  <button onclick='validator({event:event , from:"register"})'> Đăng Ký </button>
+                </form>
+                <div class='helpBox'><p>Bạn chưa có tài khoản? &nbsp;<p id='nextPage'onclick='ShowLoginFrom()'>Đăng Nhập</p></p></div>
+              </div>`;
+  }
+};
+/*****************************************/
 var cinemaId = "BHDStar";
 const addressCinemas = document.querySelector(".addressCinemas");
 const LogoCinemas = document.querySelector(".LogoCinemas");
 const Showtimes = document.querySelector(".Showtimes");
 var data = [];
 var addressCinemaId = 0;
+const MenuBar = document.querySelector(".listItem");
+const listItem = Array.from(MenuBar.getElementsByTagName("li"));
+const Scrollbar = (element) => {
+  window.scrollTo({
+    top: document.querySelector(element).offsetTop - 128,
+    behavior: "smooth",
+  });
+};
+listItem[0].onclick = () => {
+  Scrollbar(".ProductGroup");
+  FromPage.style.bottom = "-100%";
+  ShowForm = true;
+};
+listItem[1].onclick = () => {
+  Scrollbar(".Movie");
+  FromPage.style.bottom = "-100%";
+  ShowForm = true;
+};
+listItem[2].onclick = () => {
+  Scrollbar(".News");
+  FromPage.style.bottom = "-100%";
+  ShowForm = true;
+};
+listItem[3].onclick = () => {
+  Scrollbar(".mobileApp");
+  FromPage.style.bottom = "-100%";
+  ShowForm = true;
+};
 const handleOnClickAddresses = (e) => {
   cinemaId = e.attributes.id.nodeValue;
   ShowDetails(cinemaId);
@@ -473,102 +823,116 @@ ShowTraiLerProducts.onclick = () => {
   urlProduct = "";
   ShowHandlesTrailer(urlProduct);
 };
-const handleClickBtn=(id )=>{
+const handleClickBtn = (id) => {
   var Btnlist = Array.from(document.querySelectorAll(".btnProduct"));
-  Btnlist.map((btn)=>{
-    if(btn.id===`c${id}`){
-      let rotatefloor = id*(360/leng)
-      btn.style.backgroundColor = "#fb4226"
-      Floor.style.transform = `rotateY(-${rotatefloor}deg)`
-    }else{
-      btn.style.backgroundColor = "#757575"
+  Btnlist.map((btn) => {
+    if (btn.id === `c${id}`) {
+      let rotatefloor = id * (360 / leng);
+      btn.style.backgroundColor = "#fb4226";
+      Floor.style.transform = `rotateY(-${rotatefloor}deg)`;
+    } else {
+      btn.style.backgroundColor = "#757575";
     }
-  })
-}
-var leng = 0
+  });
+};
+var leng = 0;
 const URLdanhSachPhim =
   "https://movie0706.cybersoft.edu.vn/api/QuanLyPhim/LayDanhSachPhim?maNhom=GP09";
 const Floor = document.querySelector(".Floor");
-fetch(URLdanhSachPhim)
+const ShowProductList = (res) => {
+  var limit = 8;
+  const bodyWidth = document.getElementsByTagName('body')[0].clientWidth
+  if (bodyWidth <= 768 && bodyWidth >=570) {
+    limit = 6;
+  }else if (bodyWidth<570){
+    limit = 4
+  }
+  const ArrayNumbers = Math.ceil(res.length / limit);
+  var ArrayPages = [];
+  for (let i = 0; i < ArrayNumbers; i++) {
+    const Page = res.slice(limit * i, limit * (i + 1));
+    ArrayPages.push(Page);
+  }
+  
+  const componentShowProducts = () => {
+    const OnClick = (id, url) => {
+      let i = url.lastIndexOf("watch?v=");
+      let k = "";
+      if (i !== -1) {
+        k = url.slice(i + 8);
+        dataUrl[id] = k;
+      } else {
+        k = url.slice(17);
+        dataUrl[id] = k;
+      }
+    };
+    // tránh vỡ layout khi data tăng
+    const RotateYProductTab = 360 / ArrayPages.length;
+    const translateZProductTab =
+      Floor.clientWidth /
+      2 /
+      Math.tan(((RotateYProductTab / 2) * Math.PI) / 180);
+    //======================================
+    const productList = ArrayPages.map((page, i) => {
+      const ProductItem = page.map((item) => {
+        return `<div class="product">
+                <div class="Picture" id='${item.maPhim}' 
+                  ${OnClick(item.maPhim, item.trailer)}
+                  onclick=handleShowTrailer(${item.maPhim})>
+                  <img
+                    src="${item.hinhAnh}"
+                    alt=""
+                  />
+                  <div class="cushion">
+                    <div class="player">
+                      <img src="./static/img/play.png" alt="" />
+                    </div>
+                  </div>
+                </div>
+                <div class="detail">
+                  <h4 class="detailTitle">
+                    <span>C18</span>
+                    ${item.biDanh}
+                  </h4>
+                  <p class="detailText">
+                    ${item.moTa}
+                  </p>
+                  <div class="buy"><p>Mua Vé</p></div>
+                </div>
+              </div>`;
+      });
+
+      return `<div class="productList" 
+      style="transform: rotateY(${
+        i * RotateYProductTab
+      }deg) translateZ(${translateZProductTab}px)">
+                ${ProductItem}
+              </div>`;
+    });
+    return productList;
+  };
+  Floor.innerHTML = componentShowProducts().join().replace(/,/g, "");
+  const sliderProduct = document.querySelector(".sliderProduct");
+  const BtnArr = [];
+  for (let h = 0; h < ArrayPages.length; h++) {
+    var BtnItem = `<button class="btnProduct" id = 'c${h}' type="button" onclick="handleClickBtn(${h})"></button>`;
+    BtnArr.push(BtnItem);
+  }
+  sliderProduct.innerHTML = BtnArr.join().replace(/,/g, "");
+  leng = ArrayPages.length;
+};
+const productComponent=()=>{
+  fetch(URLdanhSachPhim)
   .then((res) => {
     return res.json();
   })
   .then((res) => {
-    const SliderContainer = document.querySelector(".SliderContainer");
-    var limit = 8
-    if (SliderContainer.clientWidth<=768){
-      limit = 6;
-    }
-    const ArrayNumbers = Math.ceil(res.length / limit);
-    var ArrayPages = [];
-    for (let i = 0; i < ArrayNumbers; i++) {
-      const Page = res.slice(limit * i, limit * (i + 1));
-      ArrayPages.push(Page);
-    }
-    const componentShowProducts = () => {
-      const OnClick = (id, url) => {
-        let i = url.lastIndexOf("watch?v=");
-        let k = "";
-        if (i !== -1) {
-          k = url.slice(i + 8);
-          dataUrl[id] = k;
-        } else {
-          k = url.slice(17);
-          dataUrl[id] = k;
-        }
-      };
-      // tránh vỡ layout khi data tăng
-      const RotateYProductTab = 360 / ArrayPages.length;
-      const translateZProductTab =
-        Floor.clientWidth /
-        2 /
-        Math.tan(((RotateYProductTab / 2) * Math.PI) / 180);
-      //======================================
-      const productList = ArrayPages.map((page, i) => {
-        const ProductItem = page.map((item) => {
-          return `<div class="product">
-                  <div class="Picture" id='${item.maPhim}' 
-                    ${OnClick(item.maPhim, item.trailer)}
-                    onclick=handleShowTrailer(${item.maPhim})>
-                    <img
-                      src="${item.hinhAnh}"
-                      alt=""
-                    />
-                    <div class="cushion">
-                      <div class="player">
-                        <img src="./static/img/play.png" alt="" />
-                      </div>
-                    </div>
-                  </div>
-                  <div class="detail">
-                    <h4 class="detailTitle">
-                      <span>C18</span>
-                      ${item.biDanh}
-                    </h4>
-                    <p class="detailText">
-                      ${item.moTa}
-                    </p>
-                    <div class="buy"><p>Mua Vé</p></div>
-                  </div>
-                </div>`;
-        });
-
-        return `<div class="productList" 
-        style="transform: rotateY(${i * RotateYProductTab}deg) translateZ(${translateZProductTab}px)">
-                  ${ProductItem}
-                </div>`;
-      });
-      return productList;
-    };
-    Floor.innerHTML = componentShowProducts().join().replace(/,/g, "");
-    const sliderProduct = document.querySelector(".sliderProduct")
-    const BtnArr = []
-    for(let h=0 ; h<ArrayPages.length ; h++){
-       var BtnItem= `<button class="btnProduct" id = 'c${h}' type="button" onclick="handleClickBtn(${h})"></button>`
-       BtnArr.push(BtnItem)
-    }
-    sliderProduct.innerHTML = BtnArr.join().replace(/,/g, "");
-    leng = ArrayPages.length
+    ShowProductList(res);
   });
+}
+productComponent()
+window.onresize = ()=>{
+  productComponent()
+}
 NewDetailTab();
 ShowDetails(cinemaId);

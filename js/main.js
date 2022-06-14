@@ -1,3 +1,26 @@
+const menuMobile = document.querySelector('.menuMobile')
+const divBefor = menuMobile.querySelector('.divBefor')
+const divCenter = menuMobile.querySelector('.divCenter')
+const divAffter = menuMobile.querySelector('.divAffter')
+var ShowMenuMobile = false
+menuMobile.onclick = function(){
+  if (ShowMenuMobile){
+    divCenter.style.width = "27px"
+    divBefor.style.transform = "rotateZ(0deg)"
+    divBefor.style.top = "0px"
+    divAffter.style.transform = "rotateZ(0deg)"
+    divAffter.style.bottom = "0px"
+    ShowMenuMobile = !ShowMenuMobile
+  }else{
+    divCenter.style.width = "0px"
+    divBefor.style.transform = "rotateZ(45deg)"
+    divBefor.style.top = "8px"
+    divAffter.style.transform = "rotateZ(-45deg)"
+    divAffter.style.bottom = "8px"
+    ShowMenuMobile = !ShowMenuMobile
+  }
+  
+}
 //========= Validator ================
 const LoginElement = document.querySelector(".Login");
 const RegisterElement = document.querySelector(".register");
@@ -868,10 +891,7 @@ const ShowProductList = (res) => {
     };
     // tránh vỡ layout khi data tăng
     const RotateYProductTab = 360 / ArrayPages.length;
-    const translateZProductTab =
-      Floor.clientWidth /
-      2 /
-      Math.tan(((RotateYProductTab / 2) * Math.PI) / 180);
+    const translateZProductTab = (Floor.clientWidth /2 / Math.tan(((RotateYProductTab / 2) * Math.PI) / 180))+1;
     //======================================
     const productList = ArrayPages.map((page, i) => {
       const ProductItem = page.map((item) => {
